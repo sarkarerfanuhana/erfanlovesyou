@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Subarna & Erfan | Our Story</title>
+    <!-- Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -11,34 +12,33 @@
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .animate-spin-slow { animation: spin-slow 12s linear infinite; }
-        body { background-color: #020617; margin: 0; color: white; font-family: sans-serif; }
-        /* Prevent flash of unstyled content */
-        [v-cloak] { display: none; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;900&display=swap');
+        
+        body { 
+            margin: 0; 
+            background-color: #0f172a; 
+            font-family: 'Inter', sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        @keyframes spin-slow {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .animate-spin-slow { animation: spin-slow 8s linear infinite; }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #e11d48; border-radius: 10px; }
     </style>
 </head>
 <body>
-    <div id="root">
-        <div class="flex items-center justify-center h-screen">
-            <p class="text-slate-500 animate-pulse">Loading Our Story...</p>
-        </div>
-    </div>
+    <div id="root"></div>
 
     <script type="text/babel">
-        // Standard React Hooks
-        const { useState, useEffect } = React;
-
-        // Simple Icon Component because Lucide-React CDN can be unstable
-        const Icon = ({ name, className = "w-6 h-6", ...props }) => {
-            const ref = React.useRef(null);
-            useEffect(() => {
-                if (window.lucide) {
-                    window.lucide.createIcons();
-                }
-            }, [name]);
-            return <i data-lucide={name} className={className} {...props}></i>;
-        };
+        const { useState, useEffect, useRef } = React;
 
         const App = () => {
             const [scrollY, setScrollY] = useState(0);
@@ -48,13 +48,20 @@
             useEffect(() => {
                 const handleScroll = () => setScrollY(window.scrollY);
                 window.addEventListener('scroll', handleScroll, { passive: true });
-                // Initialize icons
+                // Initialize icons on load
                 if (window.lucide) window.lucide.createIcons();
                 return () => window.removeEventListener('scroll', handleScroll);
             }, []);
 
+            // Re-run icon generation when dynamic content changes
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            }, [isUnlocked, revealedSecrets]);
+
             const toggleSecret = (id) => {
-                if (!revealedSecrets.includes(id)) setRevealedSecrets([...revealedSecrets, id]);
+                if (!revealedSecrets.includes(id)) {
+                    setRevealedSecrets([...revealedSecrets, id]);
+                }
             };
 
             const getTransform = (speed, offset = 0) => {
@@ -63,112 +70,243 @@
             };
 
             return (
-                <div className="min-h-[550vh] bg-slate-950 text-white selection:bg-rose-500/30 overflow-x-hidden">
+                <div className="min-h-[550vh] bg-slate-950 text-white selection:bg-rose-500/30 font-sans overflow-x-hidden">
                     
-                    {/* Background Dynamic Gradient */}
+                    {/* Background Depth Engine - Restored Exact Colors */}
                     <div 
                         className="fixed inset-0 transition-colors duration-1000 pointer-events-none z-0"
                         style={{
                             background: `linear-gradient(to bottom, 
-                                ${scrollY < 1200 ? '#0f172a' : scrollY < 3000 ? '#1e1b4b' : '#020617'} 0%, 
-                                ${scrollY < 2500 ? '#020617' : '#000000'} 100%)`
+                                ${scrollY < 1000 ? '#0f172a' : scrollY < 2500 ? '#312e81' : '#020617'} 0%, 
+                                ${scrollY < 2000 ? '#1e1b4b' : '#000000'} 100%)`
                         }}
                     />
 
-                    {/* Hero Section */}
+                    {/* Hero: The Atmosphere */}
                     <section className="relative h-screen flex flex-col items-center justify-center z-10">
-                        <div style={{ transform: getTransform(0.3) }} className="text-center p-8">
-                            <div className="flex justify-center gap-8 mb-6 opacity-60">
-                                <Icon name="heart" className="text-rose-400 animate-bounce" />
-                                <Icon name="sun" className="text-amber-200 animate-spin-slow" />
-                                <Icon name="heart" className="text-rose-400 animate-bounce" style={{animationDelay: '0.5s'}} />
+                        <div 
+                            style={{ transform: getTransform(0.4) }}
+                            className="relative text-center p-8 group"
+                        >
+                            {/* Decorative Floating Elements */}
+                            <div className="absolute -top-20 left-1/2 -translate-x-1/2 flex justify-center gap-12 pointer-events-none opacity-50">
+                                <i data-lucide="heart" className="w-6 h-6 text-rose-400 animate-bounce"></i>
+                                <i data-lucide="sun" className="w-8 h-8 text-amber-200 animate-spin-slow"></i>
+                                <i data-lucide="heart" className="w-6 h-6 text-rose-400 animate-bounce" style={{animationDelay: '0.3s'}}></i>
                             </div>
-                            <span className="text-xs tracking-[0.6em] text-rose-300/60 font-bold uppercase block mb-4">A Story Written on Sundays</span>
-                            <h1 className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-4">
-                                <span className="block text-white">SUBARNA</span>
-                                <span className="block text-rose-500 my-2">♥</span>
-                                <span className="block text-blue-200">ERFAN</span>
-                            </h1>
-                            <p className="mt-8 text-lg text-slate-400 max-w-lg mx-auto italic">
-                                Every layer of this story was written by <span className="text-white font-bold">us</span>.
+
+                            <div className="mb-2">
+                                <span className="text-xs tracking-[0.6em] text-rose-300/60 font-medium uppercase">A Story Written on Sundays</span>
+                            </div>
+
+                            <div className="relative flex flex-col items-center">
+                                {/* Dynamic Name Display - EXACT ORIGINAL LAYOUT */}
+                                <h1 className="text-7xl md:text-9xl font-black tracking-tighter leading-none">
+                                    <span className="block bg-clip-text text-transparent bg-gradient-to-r from-rose-200 via-white to-rose-100 drop-shadow-sm">
+                                        SUBARNA
+                                    </span>
+                                    <div className="flex items-center justify-center my-2 gap-4">
+                                        <div className="h-[1px] w-12 md:w-24 bg-gradient-to-r from-transparent to-rose-400/50" />
+                                        <i data-lucide="heart" className="w-8 h-8 md:w-12 md:h-12 text-rose-500 fill-rose-500/20 animate-pulse"></i>
+                                        <div className="h-[1px] w-12 md:w-24 bg-gradient-to-l from-transparent to-blue-400/50" />
+                                    </div>
+                                    <span className="block bg-clip-text text-transparent bg-gradient-to-r from-blue-100 via-white to-blue-200 drop-shadow-sm">
+                                        ERFAN
+                                    </span>
+                                </h1>
+                                <div className="absolute inset-0 bg-rose-500/10 blur-[100px] -z-10 rounded-full" />
+                            </div>
+
+                            <p className="mt-8 text-lg md:text-xl font-light text-slate-400 max-w-lg mx-auto leading-relaxed">
+                                Every layer of this story was written by <span className="text-white font-medium italic">us</span>. 
+                                A beautiful sequence of <span className="text-amber-200 font-semibold uppercase tracking-tighter">Sundays</span> that changed our lives.
+                            </p>
+                            
+                            <div className="mt-16 animate-bounce flex flex-col items-center gap-2 opacity-40 hover:opacity-100 transition-opacity">
+                                <span className="text-[10px] tracking-[0.5em] font-bold uppercase">Start the Descent</span>
+                                <i data-lucide="navigation" className="rotate-180 w-4 h-4"></i>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Layer 1: The Beginning (Texting) */}
+                    <section className="relative min-h-screen z-20 px-6 flex items-center">
+                        <div 
+                            className="max-w-2xl mx-auto bg-white/5 backdrop-blur-xl p-10 rounded-[2rem] border border-white/10 shadow-2xl"
+                            style={{ transform: getTransform(-0.15, 800) }}
+                        >
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="p-3 bg-blue-500/20 rounded-xl">
+                                    <i data-lucide="sun" className="w-8 h-8 text-amber-400"></i>
+                                </div>
+                                <div>
+                                    <p className="text-blue-400 font-mono text-sm uppercase">Sunday • October 26, 2025</p>
+                                    <h2 className="text-3xl font-bold">The First "Hello"</h2>
+                                </div>
+                            </div>
+                            <p className="text-lg text-slate-300 leading-relaxed italic">
+                                "It all started on a quiet Sunday. I reached out for the first time, 
+                                not knowing that this specific Sunday would become the foundation of everything. 
+                                They say Sundays are for rest, but for us, it was the day we began to move."
                             </p>
                         </div>
                     </section>
 
-                    {/* Timeline Layer 1 */}
-                    <section className="relative min-h-screen z-20 px-6 flex items-center">
-                        <div className="max-w-2xl mx-auto bg-white/5 backdrop-blur-xl p-10 rounded-3xl border border-white/10" style={{ transform: getTransform(-0.1, 800) }}>
-                            <div className="flex items-center gap-4 mb-4">
-                                <Icon name="message-circle" className="text-blue-400 w-8 h-8" />
-                                <div>
-                                    <p className="text-blue-400 text-sm font-mono">OCTOBER 26, 2025</p>
-                                    <h2 className="text-3xl font-bold">The First "Hello"</h2>
-                                </div>
-                            </div>
-                            <p className="text-slate-300 text-lg leading-relaxed italic">"It all started on a quiet Sunday. I reached out for the first time, not knowing that this specific Sunday would become the foundation of everything."</p>
-                        </div>
-                    </section>
-
-                    {/* Timeline Layer 2 */}
+                    {/* Layer 2: The Physical Reality (Meeting) */}
                     <section className="relative min-h-screen z-20 px-6 flex items-center justify-end">
-                        <div className="max-w-2xl mx-auto md:mr-20 bg-white/5 backdrop-blur-xl p-10 rounded-3xl border border-white/10" style={{ transform: getTransform(-0.1, 1800) }}>
-                            <div className="flex items-center gap-4 mb-4">
-                                <Icon name="eye" className="text-rose-400 w-8 h-8" />
+                        <div 
+                            className="max-w-2xl mx-auto md:mr-20 bg-white/5 backdrop-blur-xl p-10 rounded-[2rem] border border-white/10 shadow-2xl"
+                            style={{ transform: getTransform(-0.1, 1800) }}
+                        >
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="p-3 bg-rose-500/20 rounded-xl">
+                                    <i data-lucide="eye" className="w-8 h-8 text-rose-400"></i>
+                                </div>
                                 <div>
-                                    <p className="text-rose-400 text-sm font-mono">NOVEMBER 02, 2025</p>
+                                    <p className="text-rose-400 font-mono text-sm uppercase">Sunday • November 02, 2025</p>
                                     <h2 className="text-3xl font-bold">Face to Face</h2>
                                 </div>
                             </div>
-                            <p className="text-slate-300 text-lg leading-relaxed italic">"Seeing you standing there, Subarna, confirmed what that first Sunday hinted at. The digital world faded away."</p>
+                            <p className="text-lg text-slate-300 leading-relaxed italic">
+                                "Exactly one week later, another Sunday brought us together in person. 
+                                Seeing you standing there, Subarna, confirmed what that first Sunday hinted at. 
+                                The digital world faded away, and for the first time, our Sundays became shared reality."
+                            </p>
+                            <div className="mt-4 flex items-center gap-2 text-rose-300/60 text-sm">
+                                <i data-lucide="map-pin" className="w-4 h-4"></i>
+                                <span>The second Sunday of our destiny.</span>
+                            </div>
                         </div>
                     </section>
 
-                    {/* Secrets Section */}
+                    {/* Layer 3: The Deep Secrets */}
                     <section className="relative min-h-screen z-30 flex items-center justify-center py-20">
                         <div className="max-w-3xl w-full px-6 text-center">
-                            <h2 className="text-4xl font-black mb-12">Things I only tell you...</h2>
+                            <i data-lucide="anchor" className="w-12 h-12 text-indigo-400 mb-8 mx-auto animate-pulse"></i>
+                            <h2 className="text-4xl font-black mb-12 uppercase tracking-tighter">Things I only tell you...</h2>
+                            
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {[
                                     { id: 1, hint: "Why I call you 'Baby'...", msg: "Because you're my most precious person, someone I want to protect and cherish every single second." },
-                                    { id: 2, hint: "The 'Sunday' Connection...", msg: "Every major milestone we have happened on a Sunday. It's like the universe reserved that day for us." },
+                                    { id: 2, hint: "The 'Sunday' Connection...", msg: "Did you realize? Every major milestone we have—our first text, our first meeting, and our proposal—all happened on a Sunday." },
                                     { id: 3, hint: "A secret about Nov 2nd...", msg: "I was so nervous my hands were shaking before I saw you. I kept checking my hair every 30 seconds!" },
-                                    { id: 4, hint: "When you call me 'Baby'...", msg: "My heart actually skips a beat. It's my favorite sound in the world." },
-                                ].map((s) => (
-                                    <button 
-                                        key={s.id} 
-                                        onClick={() => toggleSecret(s.id)}
-                                        className={`p-8 rounded-2xl border transition-all ${revealedSecrets.includes(s.id) ? 'bg-indigo-500/20 border-indigo-400' : 'bg-white/5 border-white/10'}`}
+                                    { id: 4, hint: "When you call me 'Baby'...", msg: "My heart actually skips a beat. It's my favorite sound in the world, hearing that coming from you." },
+                                ].map((secret) => (
+                                    <button
+                                        key={secret.id}
+                                        onClick={() => toggleSecret(secret.id)}
+                                        className={`group p-8 rounded-3xl transition-all duration-700 border text-left
+                                          ${revealedSecrets.includes(secret.id) 
+                                            ? 'bg-indigo-600/20 border-indigo-400/50 scale-105 shadow-lg' 
+                                            : 'bg-white/5 border-white/10 hover:bg-white/10'}`}
                                     >
-                                        {revealedSecrets.includes(s.id) ? <p className="italic">"{s.msg}"</p> : <div className="flex justify-between items-center opacity-60"><span>{s.hint}</span> <Icon name="lock" className="w-4 h-4"/></div>}
+                                        {!revealedSecrets.includes(secret.id) ? (
+                                            <div className="flex justify-between items-center opacity-60 group-hover:opacity-100">
+                                                <span className="font-semibold text-indigo-200">{secret.hint}</span>
+                                                <i data-lucide="lock" className="w-4 h-4"></i>
+                                            </div>
+                                        ) : (
+                                            <p className="text-white font-medium leading-relaxed italic animate-in fade-in">"{secret.msg}"</p>
+                                        )}
                                     </button>
                                 ))}
                             </div>
                         </div>
                     </section>
 
-                    {/* Proposal Section */}
+                    {/* Layer 4: The Core (Proposal) */}
                     <section className="relative min-h-screen py-32 z-40 flex items-center justify-center">
-                        {!isUnlocked ? (
-                            <div className="text-center space-y-6">
-                                <div onClick={() => setIsUnlocked(true)} className="w-24 h-24 bg-rose-600 rounded-full mx-auto flex items-center justify-center cursor-pointer hover:scale-110 transition-transform shadow-[0_0_50px_rgba(225,29,72,0.4)]">
-                                    <Icon name="unlock" className="w-10 h-10" />
-                                </div>
-                                <p className="text-slate-400 font-mono tracking-widest">DECEMBER 07, 2025</p>
-                            </div>
-                        ) : (
-                            <div className="max-w-2xl px-6 text-center animate-in fade-in zoom-in duration-1000">
-                                <Icon name="heart" className="w-20 h-20 text-rose-500 mx-auto fill-rose-500 mb-8 animate-pulse" />
-                                <h2 className="text-5xl font-black mb-6">Subarna Sultana,</h2>
-                                <div className="bg-white/5 backdrop-blur-2xl p-8 rounded-[2.5rem] border border-white/20">
-                                    <p className="text-2xl text-rose-200 italic leading-relaxed">"I love you, Baby. Not just for who you are, but for who I am when I'm with you."</p>
-                                    <div className="mt-8 pt-8 border-t border-white/10">
-                                        <p className="text-xs text-slate-500 uppercase tracking-widest mb-2">Forever yours,</p>
-                                        <p className="text-3xl font-black uppercase">Sarkar Erfan Uhana</p>
+                        <div className="absolute w-[800px] h-[800px] bg-rose-600/10 rounded-full blur-[160px] animate-pulse pointer-events-none" />
+                        
+                        <div className="relative z-10 text-center max-w-2xl px-6 w-full">
+                            {!isUnlocked ? (
+                                <div className="space-y-8 flex flex-col items-center">
+                                    <div 
+                                        className="w-28 h-28 rounded-full bg-gradient-to-tr from-rose-600 to-pink-400 flex items-center justify-center shadow-[0_0_60px_rgba(225,29,72,0.5)] cursor-pointer hover:scale-110 active:scale-95 transition-all duration-300"
+                                        onClick={() => setIsUnlocked(true)}
+                                    >
+                                        <i data-lucide="unlock" className="w-10 h-10 text-white"></i>
+                                    </div>
+                                    <div className="bg-white/5 p-6 rounded-2xl backdrop-blur-sm border border-white/10">
+                                        <h3 className="text-2xl font-bold mb-2 uppercase tracking-tighter">December 07, 2025</h3>
+                                        <p className="text-slate-400 italic">The day I asked for your 'Forever'. Click the lock to open my heart.</p>
                                     </div>
                                 </div>
-                            </div>
-                        )}
+                            ) : (
+                                <div className="animate-in fade-in zoom-in-95 duration-1000 flex flex-col items-center w-full">
+                                    <div className="h-32 flex items-center justify-center mb-8 relative">
+                                        <i data-lucide="heart" className="w-24 h-24 text-rose-500 fill-rose-500 animate-bounce relative z-10"></i>
+                                        <div className="absolute inset-0 bg-rose-500/20 blur-2xl rounded-full scale-150 animate-pulse" />
+                                    </div>
+
+                                    <h2 className="text-5xl md:text-6xl font-black mb-8 bg-clip-text text-transparent bg-gradient-to-b from-white to-rose-200 uppercase tracking-tighter">
+                                        Subarna Sultana,
+                                    </h2>
+                                    
+                                    <div className="bg-white/5 backdrop-blur-xl p-8 md:p-12 rounded-[3rem] border border-white/20 text-lg md:text-xl leading-relaxed text-slate-100 shadow-2xl relative w-full text-center">
+                                        <p className="mb-6 font-medium">
+                                            From the first text on 26th October to seeing you on 2nd November, 
+                                            every moment led to 7th December—the day I promised you everything.
+                                        </p>
+                                        <p className="font-serif italic text-2xl md:text-3xl text-rose-300">
+                                            "I love you, Baby. Not just for who you are, but for who I am when I'm with you."
+                                        </p>
+                                        <div className="mt-8 pt-8 border-t border-white/10 flex flex-col items-center">
+                                            <span className="text-sm uppercase tracking-widest text-slate-500 mb-2 font-bold">Signed with love</span>
+                                            <span className="text-3xl font-black tracking-tighter uppercase">Sarkar Erfan Uhana</span>
+                                        </div>
+                                    </div>
+
+                                    <button 
+                                        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                                        className="mt-12 group flex items-center gap-2 mx-auto text-slate-400 hover:text-white transition-colors"
+                                    >
+                                        <i data-lucide="navigation" className="w-4 h-4 rotate-0 group-hover:-translate-y-1 transition-transform"></i>
+                                        <span>Back to the start</span>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Ambient Particles */}
+                        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                            {[...Array(30)].map((_, i) => (
+                                <div
+                                    key={i}
+                                    className="absolute text-white/20 animate-pulse"
+                                    style={{
+                                        top: `${Math.random() * 100}%`,
+                                        left: `${Math.random() * 100}%`,
+                                        animationDelay: `${Math.random() * 5}s`,
+                                    }}
+                                >
+                                    <div className="w-1 h-1 bg-white rounded-full" />
+                                </div>
+                            ))}
+                        </div>
                     </section>
+
+                    {/* Side Navigation Dots */}
+                    <div className="fixed left-8 top-1/2 -translate-y-1/2 flex flex-col gap-6 z-50">
+                        {[
+                            { label: 'Start', icon: 'navigation' },
+                            { label: 'Oct 26', icon: 'message-circle' },
+                            { label: 'Nov 02', icon: 'eye' },
+                            { label: 'Dec 07', icon: 'heart' }
+                        ].map((item, idx) => {
+                            const sectionHeight = document.body.scrollHeight / 5;
+                            const isActive = Math.floor(scrollY / sectionHeight) === idx;
+                            return (
+                                <div key={idx} className="group flex items-center gap-4 cursor-pointer">
+                                    <div className={`w-3 h-3 rounded-full transition-all duration-500 border ${isActive ? 'bg-rose-500 border-rose-400 scale-150 shadow-[0_0_10px_rgba(244,63,94,0.8)]' : 'bg-white/20 border-transparent'}`} />
+                                    <span className={`text-[10px] uppercase tracking-widest transition-opacity duration-300 ${isActive ? 'opacity-100 font-bold' : 'opacity-0 group-hover:opacity-100'}`}>
+                                        {item.label}
+                                    </span>
+                                </div>
+                            );
+                        })}
+                    </div>
+
                 </div>
             );
         };
